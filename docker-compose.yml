@@ -1,0 +1,36 @@
+version: "3.2"
+
+services:
+  minecraft:
+    build: "./"
+    image: "minecraft:latest"
+    networks:
+      - "mcnet"
+    ports:
+      - "25565"
+    container_name: "minecraft"
+    env_file: "./runtime/env"
+    volumes:
+      - "mc-bak:/backup"
+
+  cron:
+    build: "./"
+    image: "minecraft:latest"
+    networks:
+      - "mcnet"
+    container_name: "mc-cron"
+    env_file: "./runtime/env"
+    environment:
+      SERVER_HOST: "minecraft"
+    volumes:
+      - "mc-bak:/backup"
+    entrypoint: "/cron.sh"
+
+networks:
+  mcnet:
+    external: true
+
+volumes:
+  mc-bak:
+    external: true
+
